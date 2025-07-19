@@ -7,5 +7,5 @@
 .vscode/
 *.vscode/*
 
-./build
-./build/*
+build
+build/*
