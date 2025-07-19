@@ -1,3 +1,0 @@
-/home/toavina-jr/Documents/Projects/C++/SFML/Tetris/build/CMakeFiles/tetris.dir
-/home/toavina-jr/Documents/Projects/C++/SFML/Tetris/build/CMakeFiles/edit_cache.dir
-/home/toavina-jr/Documents/Projects/C++/SFML/Tetris/build/CMakeFiles/rebuild_cache.dir
