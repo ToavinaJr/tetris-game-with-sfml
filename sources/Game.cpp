@@ -171,7 +171,10 @@ void Game::render() {
     if (gameOver) {
         sf::Text gameOverText;
         sf::Font font;
-        if (!font.loadFromFile("arial.ttf")) {}
+        if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")) {
+            // Gérer l'erreur de chargement
+        }
+
         gameOverText.setFont(font);
         gameOverText.setString("Game Over!");
         gameOverText.setCharacterSize(50);

@@ -1,0 +1,38 @@
+\doxysection{Board.\+hpp}
+\hypertarget{Board_8hpp_source}{}\label{Board_8hpp_source}\index{includes/Board.hpp@{includes/Board.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ BOARD\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ BOARD\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <SFML/Graphics.hpp>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}Tetromino.hpp"{}}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classBoard}{Board}}\ \{}
+\DoxyCodeLine{00010\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00011\ \ \ \ \ \mbox{\hyperlink{classBoard}{Board}}(\textcolor{keywordtype}{int}\ w,\ \textcolor{keywordtype}{int}\ h);}
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classBoard_aca9120987a86a19eee0b053b3986dedd}{checkCollision}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classTetromino}{Tetromino}}\&\ tetro)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classBoard_ac081fe4277acfaac4e0ad86e5a37b2e3}{mergeTetromino}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classTetromino}{Tetromino}}\&\ tetro);}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classBoard_af8f1bac820f779f5aa16fef2f04b7060}{detectLinesToClear}}();}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classBoard_ab04e57682cd6d6f0b29d3f98d5c4061d}{performClearLines}}();}
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classBoard_a6fcd4697a32c694198a2c6fef6f3b48d}{draw}}(sf::RenderWindow\&\ window,\ \textcolor{keywordtype}{int}\ tileSize);}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classBoard_a156d1eed9dd52b1f1a9cc504f963404c}{drawGrid}}(sf::RenderWindow\&\ window,\ \textcolor{keywordtype}{int}\ tileSize);}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classBoard_aa1a530eea29b378f005eb94e3c235035}{drawExplosion}}(sf::RenderWindow\&\ window,\ \textcolor{keywordtype}{int}\ tileSize,\ \textcolor{keywordtype}{float}\ animTime);}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordtype}{int}\ getWidth()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ width;\ \}}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keywordtype}{int}\ getHeight()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ height;\ \}}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{bool}\ isClearing()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ !linesToClear.empty();\ \}}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{const}\ std::vector<int>\&\ getLinesToClear()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ linesToClear;\ \}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{int}\ width;}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keywordtype}{int}\ height;}
+\DoxyCodeLine{00028\ \ \ \ \ std::vector<std::vector<sf::Color>>\ grid;}
+\DoxyCodeLine{00029\ \ \ \ \ std::vector<int>\ linesToClear;}
+\DoxyCodeLine{00030\ \};}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ BOARD\_HPP}}
+
+\end{DoxyCode}

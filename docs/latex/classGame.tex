@@ -1,0 +1,57 @@
+\doxysection{Game Class Reference}
+\hypertarget{classGame}{}\label{classGame}\index{Game@{Game}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classGame_a7f2ad24b42a8033ae2976eb23f632741}{Game}} (int width, int height, int tile\+Size)
+\begin{DoxyCompactList}\small\item\em Constructeur de la classe \doxylink{classGame}{Game}. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classGame_a1ab78f5ed0d5ea879157357cf2fb2afa}{run}} ()
+\begin{DoxyCompactList}\small\item\em Boucle principale du jeu. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classGame_a7f2ad24b42a8033ae2976eb23f632741}\label{classGame_a7f2ad24b42a8033ae2976eb23f632741} 
+\index{Game@{Game}!Game@{Game}}
+\index{Game@{Game}!Game@{Game}}
+\doxysubsubsection{\texorpdfstring{Game()}{Game()}}
+{\footnotesize\ttfamily Game\+::\+Game (\begin{DoxyParamCaption}\item[{int}]{width,  }\item[{int}]{height,  }\item[{int}]{t }\end{DoxyParamCaption})}
+
+
+
+Constructeur de la classe \doxylink{classGame}{Game}. 
+
+Initialise la fenêtre SFML, la grille de jeu (\doxylink{classBoard}{Board}), ainsi que les Tetrominos courant et suivant.
+
+
+\begin{DoxyParams}{Parameters}
+{\em width} & Largeur du plateau en nombre de blocs. \\
+\hline
+{\em height} & Hauteur du plateau en nombre de blocs. \\
+\hline
+{\em t} & Taille (en pixels) d’un bloc (tile). \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classGame_a1ab78f5ed0d5ea879157357cf2fb2afa}\label{classGame_a1ab78f5ed0d5ea879157357cf2fb2afa} 
+\index{Game@{Game}!run@{run}}
+\index{run@{run}!Game@{Game}}
+\doxysubsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily void Game\+::run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Boucle principale du jeu. 
+
+Gère l\textquotesingle{}exécution continue du jeu \+:
+\begin{DoxyItemize}
+\item Lecture des entrées
+\item Mise à jour de la logique
+\item Rendu graphique 
+\end{DoxyItemize}
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+includes/Game.\+hpp\item 
+sources/Game.\+cpp\end{DoxyCompactItemize}
