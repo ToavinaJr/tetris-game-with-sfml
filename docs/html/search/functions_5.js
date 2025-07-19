@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['performclearlines_0',['performClearLines',['../classBoard.html#ab04e57682cd6d6f0b29d3f98d5c4061d',1,'Board']]]
+  ['mergetetromino_0',['mergeTetromino',['../classBoard.html#ac081fe4277acfaac4e0ad86e5a37b2e3',1,'Board']]],
+  ['move_1',['move',['../classTetromino.html#aa3bfecc76a850dfe27329715d5818e96',1,'Tetromino']]]
 ];
