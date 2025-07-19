@@ -1,4 +1,6 @@
-#pragma once
+#ifndef TETROMINO_HPP
+#define TETROMINO_HPP
+
 #include <array>
 #include <SFML/Graphics.hpp>
 
@@ -15,8 +17,11 @@ public:
     void setBlocks(const std::array<sf::Vector2i, 4>& b) { blocks = b; }
     inline void setColor(sf::Color c) { color = c; }
     inline sf::Color getColor() const { return color; }
+
 private:
     TetrominoType type;
     std::array<sf::Vector2i, 4> blocks;
     sf::Color color;
 };
+
+#endif // TETROMINO_HPP
