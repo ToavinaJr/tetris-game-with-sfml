@@ -11,6 +11,7 @@
 enum class GameState {
     MENU,
     PLAYING,
+    PAUSED,
     HELP,
     ABOUT,
     GAME_OVER
@@ -43,7 +44,8 @@ private:
     void drawMenu();
     void drawHelp();
     void drawAbout();
-
+    void drawPause();
+    
     Tetromino computeGhost() const;
 
     sf::RenderWindow window;

@@ -9,8 +9,8 @@ Game::Game(int width, int height, int t)
       state(GameState::MENU)
 {
     srand(time(nullptr));
-    if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")) {
-        throw std::runtime_error("Impossible de charger la police !");
+    if (!font.loadFromFile("/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf")) {
+        throw std::runtime_error("Impossible de charger la police Noto !");
     }
 
     current = std::make_unique<Tetromino>(TetrominoType(rand()%7), width/2);
@@ -51,7 +51,17 @@ void Game::processEvents() {
             state = GameState::MENU;
         }
 
+        if (state == GameState::PLAYING || state == GameState::PAUSED) {
+            if (e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::P) {
+                if (state == GameState::PLAYING)
+                    state = GameState::PAUSED;
+                else if (state == GameState::PAUSED)
+                    state = GameState::PLAYING;
+            }
+        }
+
         if (state != GameState::PLAYING || gameOver) continue;
+
 
         if (!clearing && e.type == sf::Event::KeyPressed) {
             if (e.key.code == sf::Keyboard::Left) {
@@ -156,7 +166,7 @@ void Game::render() {
     else if (state == GameState::ABOUT) {
         drawAbout();
     }
-    else if (state == GameState::PLAYING || state == GameState::GAME_OVER) {
+    else if (state == GameState::PLAYING || state == GameState::GAME_OVER || state == GameState::PAUSED) {
         board.drawGrid(window, tileSize);
         board.draw(window, tileSize);
 
@@ -179,6 +189,10 @@ void Game::render() {
             gameOverText.setFillColor(sf::Color::Red);
             gameOverText.setPosition(50, 200);
             window.draw(gameOverText);
+        }
+
+        if (state == GameState::PAUSED) {
+            drawPause();
         }
     }
 
@@ -210,26 +224,56 @@ void Game::drawMenu() {
 }
 
 void Game::drawHelp() {
-    sf::Text help("=== Aide ===\n"
-                  "← → : Deplacer\n"
-                  "↑ : Rotation\n"
-                  "↓ : Descente rapide\n"
-                  "Espace : Hard drop\n\n"
-                  "ECHAP : Retour au menu", font, 25);
+    sf::Text help(
+        "=== Aide ===\n"
+        "LEFT ARROW ; RIGHT  : Deplacer\n"
+        "UP ARROW : Rotation\n"
+        "DOWN ARROW : Descente rapide\n"
+        "SPACE : Hard drop\n\n"
+        "ESC : Retour au menu", font, 18);
     help.setFillColor(sf::Color::Yellow);
-    help.setPosition(50, 50);
+
+    sf::FloatRect bounds = help.getLocalBounds();
+    help.setOrigin(bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f);
+    help.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f - 50);
+
     window.draw(help);
 }
 
 void Game::drawAbout() {
-    sf::Text about("=== A propos ===\n"
-                   "Tetris en C++23 & SFML\n"
-                   "Auteur : Toavina Sylvianno\n"
-                   "2025\n\n"
-                   "ECHAP : Retour au menu", font, 25);
+    sf::Text about(
+        "=== A propos ===\n"
+        "Tetris en C++23 & SFML\n"
+        "Auteur : Toavina Sylvianno\n"
+        "2025\n\n"
+        "ECHAP : Retour au menu", font, 18);
     about.setFillColor(sf::Color::Green);
-    about.setPosition(50, 50);
+
+    sf::FloatRect bounds = about.getLocalBounds();
+    about.setOrigin(bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f);
+    about.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f - 50);
+
     window.draw(about);
+}
+
+void Game::drawPause() {
+    sf::Text pauseText("PAUSE", font, 50);
+    pauseText.setFillColor(sf::Color::Yellow);
+
+    sf::FloatRect bounds = pauseText.getLocalBounds();
+    pauseText.setOrigin(bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f);
+    pauseText.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
+
+    window.draw(pauseText);
+
+    sf::Text infoText("Appuyez sur P pour reprendre", font, 20);
+    infoText.setFillColor(sf::Color::White);
+
+    bounds = infoText.getLocalBounds();
+    infoText.setOrigin(bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f);
+    infoText.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f + 50);
+
+    window.draw(infoText);
 }
 
 void Game::setupMenuButtons() {
