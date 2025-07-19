@@ -229,7 +229,7 @@ void Game::render() {
         }
 
         if (gameOver) {
-            sf::Text gameOverText("Game Over!\nAppuyez sur ESC pour quitter", font, 40);
+            sf::Text gameOverText("Game Over!\nAppuyez sur R pour rejouer", font, 25);
             gameOverText.setFillColor(sf::Color::Red);
             gameOverText.setPosition(50, 200);
             window.draw(gameOverText);

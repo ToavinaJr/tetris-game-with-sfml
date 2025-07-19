@@ -8,20 +8,6 @@ This is a classic Tetris game developed in C++ using the **SFML** multimedia lib
 
 -----
 
-## Table of Contents
-
-  * [Features](https://www.google.com/search?q=%23features)
-  * [Getting Started](https://www.google.com/search?q=%23getting-started)
-      * [Prerequisites](https://www.google.com/search?q=%23prerequisites)
-      * [Building the Project](https://www.google.com/search?q=%23building-the-project)
-      * [Running the Game](https://www.google.com/search?q=%23running-the-game)
-  * [Project Structure](https://www.google.com/search?q=%23project-structure)
-  * [Documentation](https://www.google.com/search?q=%23documentation)
-  * [Contributing](https://www.google.com/search?q=%23contributing)
-  * [License](https://www.google.com/search?q=%23license)
-
------
-
 ## Features
 
   * Classic Tetris gameplay mechanics.
