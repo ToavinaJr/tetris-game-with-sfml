@@ -7,36 +7,72 @@
 \DoxyCodeLine{00003\ }
 \DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <SFML/Graphics.hpp>}}
 \DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <memory>}}
-\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}Board.hpp"{}}}
-\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}Tetromino.hpp"{}}}
-\DoxyCodeLine{00008\ }
-\DoxyCodeLine{00009\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classGame}{Game}}\ \{}
-\DoxyCodeLine{00010\ \textcolor{keyword}{public}:}
-\DoxyCodeLine{00011\ \ \ \ \ \mbox{\hyperlink{classGame}{Game}}(\textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height,\ \textcolor{keywordtype}{int}\ tileSize);}
-\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classGame_a1ab78f5ed0d5ea879157357cf2fb2afa}{run}}();}
-\DoxyCodeLine{00013\ }
-\DoxyCodeLine{00014\ \textcolor{keyword}{private}:}
-\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keywordtype}{void}\ processEvents();}
-\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keywordtype}{void}\ update(\textcolor{keywordtype}{float}\ dt);}
-\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keywordtype}{void}\ render();}
-\DoxyCodeLine{00018\ \ \ \ \ \mbox{\hyperlink{classTetromino}{Tetromino}}\ computeGhost()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}Board.hpp"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}Tetromino.hpp"{}}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{enum\ class}\ GameState\ \{}
+\DoxyCodeLine{00012\ \ \ \ \ MENU,}
+\DoxyCodeLine{00013\ \ \ \ \ PLAYING,}
+\DoxyCodeLine{00014\ \ \ \ \ PAUSED,}
+\DoxyCodeLine{00015\ \ \ \ \ HELP,}
+\DoxyCodeLine{00016\ \ \ \ \ ABOUT,}
+\DoxyCodeLine{00017\ \ \ \ \ GAME\_OVER}
+\DoxyCodeLine{00018\ \};}
 \DoxyCodeLine{00019\ }
-\DoxyCodeLine{00020\ \ \ \ \ sf::RenderWindow\ window;}
-\DoxyCodeLine{00021\ \ \ \ \ \mbox{\hyperlink{classBoard}{Board}}\ board;}
-\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{int}\ tileSize;}
-\DoxyCodeLine{00023\ }
-\DoxyCodeLine{00024\ \ \ \ \ std::unique\_ptr<Tetromino>\ current;}
-\DoxyCodeLine{00025\ \ \ \ \ std::unique\_ptr<Tetromino>\ next;\ \textcolor{comment}{//\ Pièce\ suivante}}
-\DoxyCodeLine{00026\ }
-\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keywordtype}{float}\ timer;}
-\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keywordtype}{float}\ delay;}
-\DoxyCodeLine{00029\ }
-\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keywordtype}{bool}\ clearing;}
-\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keywordtype}{float}\ clearTimer;}
-\DoxyCodeLine{00032\ }
-\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keywordtype}{bool}\ gameOver;}
-\DoxyCodeLine{00034\ \};}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ Structure\ pour\ gérer\ un\ bouton\ simple}}
+\DoxyCodeLine{00021\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structButton}{Button}}\ \{}
+\DoxyCodeLine{00022\ \ \ \ \ sf::RectangleShape\ shape;}
+\DoxyCodeLine{00023\ \ \ \ \ sf::Text\ text;}
+\DoxyCodeLine{00024\ \ \ \ \ std::function<void()>\ \mbox{\hyperlink{structButton_a30b76ab312dc7f66e67596ae20540ec2}{onClick}};\ }
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{bool}\ isMouseOver(\textcolor{keyword}{const}\ sf::Vector2f\&\ mousePos)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ shape.getGlobalBounds().contains(mousePos);}
+\DoxyCodeLine{00028\ \ \ \ \ \}}
+\DoxyCodeLine{00029\ \};}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classGame}{Game}}\ \{}
+\DoxyCodeLine{00032\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00033\ \ \ \ \ \mbox{\hyperlink{classGame}{Game}}(\textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height,\ \textcolor{keywordtype}{int}\ tileSize);}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classGame_a1ab78f5ed0d5ea879157357cf2fb2afa}{run}}();}
 \DoxyCodeLine{00035\ }
-\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ GAME\_HPP}}
+\DoxyCodeLine{00036\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keywordtype}{void}\ processEvents();}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keywordtype}{void}\ update(\textcolor{keywordtype}{float}\ dt);}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keywordtype}{void}\ render();}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keywordtype}{void}\ setupMenuButtons();}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keywordtype}{void}\ handleMenuClick(\textcolor{keyword}{const}\ sf::Vector2f\&\ mousePos);}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keywordtype}{void}\ drawMenu();}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keywordtype}{void}\ drawHelp();}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordtype}{void}\ drawAbout();}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordtype}{void}\ drawPause();}
+\DoxyCodeLine{00048\ \ \ \ \ }
+\DoxyCodeLine{00049\ \ \ \ \ \mbox{\hyperlink{classTetromino}{Tetromino}}\ computeGhost()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ sf::RenderWindow\ window;}
+\DoxyCodeLine{00052\ \ \ \ \ \mbox{\hyperlink{classBoard}{Board}}\ board;}
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keywordtype}{int}\ tileSize;}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ std::unique\_ptr<Tetromino>\ current;}
+\DoxyCodeLine{00056\ \ \ \ \ std::unique\_ptr<Tetromino>\ next;}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keywordtype}{float}\ timer;}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keywordtype}{float}\ delay;}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keywordtype}{bool}\ clearing;}
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keywordtype}{float}\ clearTimer;}
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keywordtype}{bool}\ gameOver;}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \ \ \ \ GameState\ state;}
+\DoxyCodeLine{00066\ \ \ \ \ sf::Font\ font;}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{comment}{//\ Boutons\ du\ menu}}
+\DoxyCodeLine{00069\ \ \ \ \ std::vector<Button>\ menuButtons;}
+\DoxyCodeLine{00070\ \};}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ GAME\_HPP}}
 
 \end{DoxyCode}

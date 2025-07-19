@@ -2,6 +2,19 @@
 #include <cstdlib>
 #include <ctime>
 
+/**
+ * @brief Constructeur de la classe Game.
+ *
+ * Initialise la fenêtre, le plateau de jeu, charge la police d'écriture,
+ * génère les deux premiers Tetrominos (courant et suivant) et configure
+ * les boutons du menu.
+ *
+ * @param width Largeur du plateau (en nombre de cases).
+ * @param height Hauteur du plateau (en nombre de cases).
+ * @param t Taille d'une case (en pixels).
+ *
+ * @throws std::runtime_error Si la police ne peut pas être chargée.
+ */
 Game::Game(int width, int height, int t)
     : window(sf::VideoMode(width*t, height*t), "Tetris SFML + Menu"),
       board(width, height), tileSize(t), timer(0), delay(0.5f),
@@ -19,9 +32,10 @@ Game::Game(int width, int height, int t)
     setupMenuButtons();
 }
 
-
 /**
- * @brief Gère les clics sur le menu.
+ * @brief Gère les clics sur les boutons du menu.
+ *
+ * @param mousePos Position actuelle de la souris dans la fenêtre.
  */
 void Game::handleMenuClick(const sf::Vector2f& mousePos) {
     for (auto& btn : menuButtons) {
@@ -32,6 +46,16 @@ void Game::handleMenuClick(const sf::Vector2f& mousePos) {
     }
 }
 
+/**
+ * @brief Gère tous les événements de la fenêtre (clavier et souris).
+ *
+ * - Ferme la fenêtre si l'événement est Closed.
+ * - Gère les clics sur le menu.
+ * - Retour au menu avec ESC depuis Aide ou À propos.
+ * - Met le jeu en pause ou le reprend avec P.
+ * - Déplace, fait tourner ou fait descendre le Tetromino courant.
+ * - Effectue le "Hard Drop" avec la touche Espace.
+ */
 void Game::processEvents() {
     sf::Event e;
     while (window.pollEvent(e)) {
@@ -62,7 +86,7 @@ void Game::processEvents() {
 
         if (state != GameState::PLAYING || gameOver) continue;
 
-
+        // Gestion des mouvements et du hard drop
         if (!clearing && e.type == sf::Event::KeyPressed) {
             if (e.key.code == sf::Keyboard::Left) {
                 current->move(-1,0);
@@ -102,6 +126,14 @@ void Game::processEvents() {
     }
 }
 
+/**
+ * @brief Calcule la position du "Ghost Piece" (ombre du Tetromino).
+ *
+ * Le Ghost Piece est affiché en transparence pour indiquer où le Tetromino
+ * courant atterrira s'il est lâché directement.
+ *
+ * @return Tetromino Copie du Tetromino courant positionné en bas.
+ */
 Tetromino Game::computeGhost() const {
     Tetromino ghost = *current;
     ghost.setColor(sf::Color(200,200,200,120));
@@ -110,6 +142,11 @@ Tetromino Game::computeGhost() const {
     return ghost;
 }
 
+/**
+ * @brief Met à jour la logique du jeu (mouvement automatique, fusion des Tetrominos, lignes à effacer).
+ *
+ * @param dt Temps écoulé depuis la dernière frame (en secondes).
+ */
 void Game::update(float dt) {
     if (state != GameState::PLAYING || gameOver) return;
 
@@ -154,6 +191,13 @@ void Game::update(float dt) {
     }
 }
 
+/**
+ * @brief Dessine tous les éléments en fonction de l'état du jeu.
+ *
+ * - Menu, Aide, À propos
+ * - Plateau de jeu, Tetrominos, lignes effacées
+ * - Écran de pause ou de fin
+ */
 void Game::render() {
     window.clear(sf::Color::Black);
 
@@ -199,12 +243,15 @@ void Game::render() {
     window.display();
 }
 
+/**
+ * @brief Affiche le menu principal avec les boutons.
+ */
 void Game::drawMenu() {
     sf::Text title("=== TETRIS SFML ===", font, 40);
     title.setFillColor(sf::Color::Cyan);
 
     sf::FloatRect titleBounds = title.getLocalBounds();
-    title.setOrigin(titleBounds.left + titleBounds.width / 2.0f, 
+    title.setOrigin(titleBounds.left + titleBounds.width / 2.0f,
                     titleBounds.top + titleBounds.height / 2.0f);
     title.setPosition(window.getSize().x / 2.0f, 80.f);
 
@@ -223,13 +270,16 @@ void Game::drawMenu() {
     }
 }
 
+/**
+ * @brief Affiche l'écran d'aide avec les commandes.
+ */
 void Game::drawHelp() {
     sf::Text help(
         "=== Aide ===\n"
-        "LEFT ARROW ; RIGHT  : Deplacer\n"
-        "UP ARROW : Rotation\n"
-        "DOWN ARROW : Descente rapide\n"
-        "SPACE : Hard drop\n\n"
+        "Fleche Gauche/Droite : Deplacer\n"
+        "Fleche Haut : Rotation\n"
+        "Fleche Bas : Descente rapide\n"
+        "Espace : Hard drop\n\n"
         "ESC : Retour au menu", font, 18);
     help.setFillColor(sf::Color::Yellow);
 
@@ -240,6 +290,9 @@ void Game::drawHelp() {
     window.draw(help);
 }
 
+/**
+ * @brief Affiche les informations "À propos".
+ */
 void Game::drawAbout() {
     sf::Text about(
         "=== A propos ===\n"
@@ -256,6 +309,9 @@ void Game::drawAbout() {
     window.draw(about);
 }
 
+/**
+ * @brief Affiche l'écran de pause.
+ */
 void Game::drawPause() {
     sf::Text pauseText("PAUSE", font, 50);
     pauseText.setFillColor(sf::Color::Yellow);
@@ -276,6 +332,9 @@ void Game::drawPause() {
     window.draw(infoText);
 }
 
+/**
+ * @brief Configure les boutons du menu (Jouer, Aide, À propos, Quitter).
+ */
 void Game::setupMenuButtons() {
     std::vector<std::string> labels = {"Jouer", "Aide", "A propos", "Quitter"};
 
@@ -326,6 +385,11 @@ void Game::setupMenuButtons() {
     }
 }
 
+/**
+ * @brief Boucle principale du jeu.
+ *
+ * Gère les événements, met à jour la logique et dessine à chaque frame.
+ */
 void Game::run() {
     sf::Clock clock;
     while (window.isOpen()) {

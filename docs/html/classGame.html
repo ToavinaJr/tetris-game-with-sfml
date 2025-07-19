@@ -119,12 +119,18 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Constructeur de la classe <a class="el" href="classGame.html">Game</a>. </p>
-<p>Initialise la fenêtre SFML, la grille de jeu (<a class="el" href="classBoard.html">Board</a>), ainsi que les Tetrominos courant et suivant.</p>
+<p>Initialise la fenêtre, le plateau de jeu, charge la police d'écriture, génère les deux premiers Tetrominos (courant et suivant) et configure les boutons du menu.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">width</td><td>Largeur du plateau en nombre de blocs. </td></tr>
-    <tr><td class="paramname">height</td><td>Hauteur du plateau en nombre de blocs. </td></tr>
-    <tr><td class="paramname">t</td><td>Taille (en pixels) d’un bloc (tile). </td></tr>
+    <tr><td class="paramname">width</td><td>Largeur du plateau (en nombre de cases). </td></tr>
+    <tr><td class="paramname">height</td><td>Hauteur du plateau (en nombre de cases). </td></tr>
+    <tr><td class="paramname">t</td><td>Taille d'une case (en pixels).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>Si la police ne peut pas être chargée. </td></tr>
   </table>
   </dd>
 </dl>
@@ -148,11 +154,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Boucle principale du jeu. </p>
-<p>Gère l'exécution continue du jeu :</p><ul>
-<li>Lecture des entrées</li>
-<li>Mise à jour de la logique</li>
-<li>Rendu graphique </li>
-</ul>
+<p>Gère les événements, met à jour la logique et dessine à chaque frame. </p>
 
 </div>
 </div>

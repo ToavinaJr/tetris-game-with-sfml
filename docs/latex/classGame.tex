@@ -20,17 +20,22 @@ void \mbox{\hyperlink{classGame_a1ab78f5ed0d5ea879157357cf2fb2afa}{run}} ()
 
 Constructeur de la classe \doxylink{classGame}{Game}. 
 
-Initialise la fenêtre SFML, la grille de jeu (\doxylink{classBoard}{Board}), ainsi que les Tetrominos courant et suivant.
+Initialise la fenêtre, le plateau de jeu, charge la police d\textquotesingle{}écriture, génère les deux premiers Tetrominos (courant et suivant) et configure les boutons du menu.
 
 
 \begin{DoxyParams}{Parameters}
-{\em width} & Largeur du plateau en nombre de blocs. \\
+{\em width} & Largeur du plateau (en nombre de cases). \\
 \hline
-{\em height} & Hauteur du plateau en nombre de blocs. \\
+{\em height} & Hauteur du plateau (en nombre de cases). \\
 \hline
-{\em t} & Taille (en pixels) d’un bloc (tile). \\
+{\em t} & Taille d\textquotesingle{}une case (en pixels).\\
 \hline
 \end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em std\+::runtime\+\_\+error} & Si la police ne peut pas être chargée. \\
+\hline
+\end{DoxyExceptions}
 
 
 \doxysubsection{Member Function Documentation}
@@ -44,12 +49,7 @@ Initialise la fenêtre SFML, la grille de jeu (\doxylink{classBoard}{Board}), ai
 
 Boucle principale du jeu. 
 
-Gère l\textquotesingle{}exécution continue du jeu \+:
-\begin{DoxyItemize}
-\item Lecture des entrées
-\item Mise à jour de la logique
-\item Rendu graphique 
-\end{DoxyItemize}
+Gère les événements, met à jour la logique et dessine à chaque frame. 
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
 \item 

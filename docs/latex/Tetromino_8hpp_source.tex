@@ -2,27 +2,32 @@
 \hypertarget{Tetromino_8hpp_source}{}\label{Tetromino_8hpp_source}\index{includes/Tetromino.hpp@{includes/Tetromino.hpp}}
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
-\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <array>}}
-\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <SFML/Graphics.hpp>}}
-\DoxyCodeLine{00004\ }
-\DoxyCodeLine{00005\ \textcolor{keyword}{enum\ class}\ TetrominoType\ \{\ I,\ O,\ T,\ S,\ Z,\ J,\ L\ \};}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ TETROMINO\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ TETROMINO\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <array>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <SFML/Graphics.hpp>}}
 \DoxyCodeLine{00006\ }
-\DoxyCodeLine{00007\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classTetromino}{Tetromino}}\ \{}
-\DoxyCodeLine{00008\ \textcolor{keyword}{public}:}
-\DoxyCodeLine{00009\ \ \ \ \ \mbox{\hyperlink{classTetromino}{Tetromino}}(TetrominoType\ type,\ \textcolor{keywordtype}{int}\ startX);}
-\DoxyCodeLine{00010\ }
-\DoxyCodeLine{00011\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classTetromino_aa3bfecc76a850dfe27329715d5818e96}{move}}(\textcolor{keywordtype}{int}\ dx,\ \textcolor{keywordtype}{int}\ dy);}
-\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classTetromino_ad11d73c54a43cdd631610b26a7f43656}{rotate}}();}
-\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classTetromino_ab2b42892c6ca2cd6cd770dbf0706d5c0}{draw}}(sf::RenderWindow\&\ window,\ \textcolor{keywordtype}{int}\ tileSize);}
-\DoxyCodeLine{00014\ \ \ \ \ std::array<sf::Vector2i,\ 4>\ getBlocks()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ blocks;\ \}}
-\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keywordtype}{void}\ setBlocks(\textcolor{keyword}{const}\ std::array<sf::Vector2i,\ 4>\&\ b)\ \{\ blocks\ =\ b;\ \}}
-\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setColor(sf::Color\ c)\ \{\ color\ =\ c;\ \}}
-\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keyword}{inline}\ sf::Color\ getColor()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ color;\ \}}
-\DoxyCodeLine{00018\ \textcolor{keyword}{private}:}
-\DoxyCodeLine{00019\ \ \ \ \ TetrominoType\ type;}
-\DoxyCodeLine{00020\ \ \ \ \ std::array<sf::Vector2i,\ 4>\ blocks;}
-\DoxyCodeLine{00021\ \ \ \ \ sf::Color\ color;}
-\DoxyCodeLine{00022\ \};}
+\DoxyCodeLine{00007\ \textcolor{keyword}{enum\ class}\ TetrominoType\ \{\ I,\ O,\ T,\ S,\ Z,\ J,\ L\ \};}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classTetromino}{Tetromino}}\ \{}
+\DoxyCodeLine{00010\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00011\ \ \ \ \ \mbox{\hyperlink{classTetromino}{Tetromino}}(TetrominoType\ type,\ \textcolor{keywordtype}{int}\ startX);}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classTetromino_aa3bfecc76a850dfe27329715d5818e96}{move}}(\textcolor{keywordtype}{int}\ dx,\ \textcolor{keywordtype}{int}\ dy);}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classTetromino_ad11d73c54a43cdd631610b26a7f43656}{rotate}}();}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classTetromino_ab2b42892c6ca2cd6cd770dbf0706d5c0}{draw}}(sf::RenderWindow\&\ window,\ \textcolor{keywordtype}{int}\ tileSize);}
+\DoxyCodeLine{00016\ \ \ \ \ std::array<sf::Vector2i,\ 4>\ getBlocks()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ blocks;\ \}}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keywordtype}{void}\ setBlocks(\textcolor{keyword}{const}\ std::array<sf::Vector2i,\ 4>\&\ b)\ \{\ blocks\ =\ b;\ \}}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ setColor(sf::Color\ c)\ \{\ color\ =\ c;\ \}}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keyword}{inline}\ sf::Color\ getColor()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ color;\ \}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00022\ \ \ \ \ TetrominoType\ type;}
+\DoxyCodeLine{00023\ \ \ \ \ std::array<sf::Vector2i,\ 4>\ blocks;}
+\DoxyCodeLine{00024\ \ \ \ \ sf::Color\ color;}
+\DoxyCodeLine{00025\ \};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ TETROMINO\_HPP}}
 
 \end{DoxyCode}
