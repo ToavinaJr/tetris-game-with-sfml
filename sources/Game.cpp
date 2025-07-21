@@ -256,6 +256,19 @@ void Game::drawNextPiece() {
     }
 }
 
+/**
+ * @brief Affiche les informations du jeu (Score, Meilleur score, Niveau).
+ *
+ * Cette fonction dessine les informations sur le côté droit de la fenêtre,
+ * à l'extérieur de la grille du jeu.
+ *
+ * @details
+ * - Le score actuel est affiché en blanc.
+ * - Le meilleur score (Best) est affiché en jaune.
+ * - Le niveau actuel est affiché en cyan.
+ *
+ * @note Les informations se positionnent en fonction de la largeur du plateau (`board.getWidth()`).
+ */
 void Game::drawScore() {
     float infoX = board.getWidth() * tileSize + 20.f;
 
@@ -274,6 +287,7 @@ void Game::drawScore() {
     levelText.setPosition(infoX, 80);
     window.draw(levelText);
 }
+
 
 /**
  * @brief Dessine tous les éléments en fonction de l'état du jeu.
@@ -366,11 +380,22 @@ void Game::render() {
 }
 
 
+/**
+ * @brief Réinitialise complètement la partie pour recommencer.
+ *
+ * Cette fonction est appelée lorsqu’on appuie sur la touche **R** après un Game Over
+ * ou lorsque l’on souhaite recommencer une nouvelle partie.
+ *
+ * @details
+ * - Réinitialise la grille (`Board`).
+ * - Réinitialise le score, le niveau, le timer et les états (`clearing`, `gameOver`, etc.).
+ * - Génère un nouveau Tetromino courant et un prochain Tetromino aléatoire.
+ *
+ * @note Le meilleur score n’est pas remis à zéro (il est conservé entre les parties).
+ */
 void Game::resetGame() {
-    // Réinitialiser la grille
     board = Board(board.getWidth(), board.getHeight());
 
-    // Réinitialiser les variables
     score = 0;
     level = 1;
     timer = 0;
@@ -380,13 +405,18 @@ void Game::resetGame() {
     gameOver = false;
     state = GameState::PLAYING;
 
-    // Générer les nouveaux Tetrominos
     current = std::make_unique<Tetromino>(TetrominoType(rand()%7), board.getWidth()/2);
     next = std::make_unique<Tetromino>(TetrominoType(rand()%7), board.getWidth()/2);
 }
 
 
-// Lecture du meilleur score depuis un fichier
+/**
+ * @brief Charge le meilleur score sauvegardé depuis un fichier.
+ *
+ * Lit le fichier `scores.txt` (s'il existe) et récupère la valeur du meilleur score.
+ *
+ * @warning Si le fichier n’existe pas ou n’est pas lisible, le meilleur score reste inchangé.
+ */
 void Game::loadBestScore() {
     std::ifstream file("scores.txt");
     if (file.is_open()) {
@@ -395,7 +425,14 @@ void Game::loadBestScore() {
     }
 }
 
-// Sauvegarde si on bat le record
+
+/**
+ * @brief Sauvegarde le meilleur score dans un fichier.
+ *
+ * Écrit le meilleur score dans le fichier `scores.txt`.
+ *
+ * @warning Si le fichier n’est pas accessible en écriture, la sauvegarde échoue silencieusement.
+ */
 void Game::saveBestScore() {
     if (score > bestScore) {
         bestScore = score;
@@ -476,25 +513,39 @@ void Game::drawAbout() {
 /**
  * @brief Affiche l'écran de pause.
  */
+/**
+ * @brief Affiche l'écran de pause centré uniquement dans la grille du jeu.
+ */
 void Game::drawPause() {
-    // Rectangle semi-transparent
+    // Rectangle semi-transparent sur toute la fenêtre
     sf::RectangleShape overlay(sf::Vector2f(window.getSize().x, window.getSize().y));
     overlay.setFillColor(sf::Color(0, 0, 0, 150)); // noir avec transparence
     window.draw(overlay);
 
-    // Texte Pause
+    // === Dimensions de la grille uniquement ===
+    float gridWidth = board.getWidth() * tileSize;
+    float gridHeight = board.getHeight() * tileSize;
+
+    // === Centre de la grille ===
+    float centerX = gridWidth / 2.f;
+    float centerY = gridHeight / 2.f;
+
+    // === Texte "PAUSE" ===
     sf::Text pauseText("PAUSE", font, 50);
     pauseText.setFillColor(sf::Color::Yellow);
+
     sf::FloatRect bounds = pauseText.getLocalBounds();
     pauseText.setOrigin(bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f);
-    pauseText.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
+    pauseText.setPosition(centerX, centerY - 20.f);
     window.draw(pauseText);
 
+    // === Texte "Appuyez sur P pour reprendre" ===
     sf::Text infoText("Appuyez sur P pour reprendre", font, 20);
     infoText.setFillColor(sf::Color::White);
+
     bounds = infoText.getLocalBounds();
     infoText.setOrigin(bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f);
-    infoText.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f + 50);
+    infoText.setPosition(centerX, centerY + 40.f);
     window.draw(infoText);
 }
 
