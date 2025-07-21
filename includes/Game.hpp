@@ -45,7 +45,14 @@ private:
     void drawHelp();
     void drawAbout();
     void drawPause();
-    
+    void drawNextPiece();
+
+    void resetGame();
+    void loadBestScore();
+    void saveBestScore();
+    void updateScore(int linesCleared);
+    void drawScore();
+
     Tetromino computeGhost() const;
 
     sf::RenderWindow window;
@@ -54,6 +61,11 @@ private:
 
     std::unique_ptr<Tetromino> current;
     std::unique_ptr<Tetromino> next;
+
+    int score = 0;
+    int level = 1;
+    int totalLinesCleared = 0;
+    int bestScore = 0;
 
     float timer;
     float delay;

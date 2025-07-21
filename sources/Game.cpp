@@ -1,6 +1,7 @@
 #include "../includes/Game.hpp"
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
 
 /**
  * @brief Constructeur de la classe Game.
@@ -16,7 +17,7 @@
  * @throws std::runtime_error Si la police ne peut pas être chargée.
  */
 Game::Game(int width, int height, int t)
-    : window(sf::VideoMode(width*t, height*t), "Tetris SFML + Menu"),
+    : window(sf::VideoMode(width*t + 200, height*t), "Tetris SFML"),
       board(width, height), tileSize(t), timer(0), delay(0.5f),
       clearing(false), clearTimer(0.f), gameOver(false),
       state(GameState::MENU)
@@ -30,6 +31,7 @@ Game::Game(int width, int height, int t)
     next = std::make_unique<Tetromino>(TetrominoType(rand()%7), width/2);
 
     setupMenuButtons();
+    loadBestScore();
 }
 
 /**
@@ -60,6 +62,12 @@ void Game::processEvents() {
     sf::Event e;
     while (window.pollEvent(e)) {
         if (e.type == sf::Event::Closed) window.close();
+
+        if (state == GameState::GAME_OVER) {
+            if (e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::R) {
+                resetGame();
+            }
+        }
 
         if (state == GameState::MENU) {
             if (e.type == sf::Event::MouseButtonPressed &&
@@ -153,7 +161,19 @@ void Game::update(float dt) {
     if (clearing) {
         clearTimer += dt;
         if (clearTimer > 0.3f) {
+            int cleared = board.getLinesToClear().size(); // nombre de lignes supprimées
             board.performClearLines();
+
+            // ✅ Mise à jour du score et du niveau
+            if (cleared > 0) {
+                score += cleared * 100;        // 100 points par ligne
+                level = 1 + score / 1000;      // +1 niveau tous les 1000 points
+                if (score > bestScore) bestScore = score;
+
+                // ✅ Ajuste la vitesse du jeu en fonction du niveau
+                delay = std::max(0.1f, 0.5f - (level - 1) * 0.05f);
+            }
+
             clearing = false;
             clearTimer = 0;
             current = std::move(next);
@@ -189,6 +209,70 @@ void Game::update(float dt) {
         }
         timer = 0;
     }
+}
+
+void Game::drawNextPiece() {
+    if (!next) return;
+
+    float panelX = board.getWidth() * tileSize + 20.f;
+    float panelY = 150.f;
+
+    // Titre
+    sf::Text nextLabel("Next:", font, 20);
+    nextLabel.setFillColor(sf::Color::White);
+    nextLabel.setPosition(panelX, panelY - 30.f);
+    window.draw(nextLabel);
+
+    // Cadre
+    sf::RectangleShape box(sf::Vector2f(tileSize * 4, tileSize * 5));
+    box.setPosition(panelX, panelY);
+    box.setFillColor(sf::Color(30,30,30));
+    box.setOutlineColor(sf::Color::White);
+    box.setOutlineThickness(2);
+    window.draw(box);
+
+    // Copie de la pièce suivante pour la dessiner dans le cadre
+    Tetromino preview = *next;
+
+    // On récupère ses blocs pour les repositionner
+    auto blocks = preview.getBlocks();
+
+    // Trouver les minX et minY pour "normaliser" les coordonnées
+    int minX = blocks[0].x, minY = blocks[0].y;
+    for (auto &b : blocks) {
+        if (b.x < minX) minX = b.x;
+        if (b.y < minY) minY = b.y;
+    }
+
+    // Décaler et dessiner manuellement les blocs
+    sf::RectangleShape rect(sf::Vector2f(tileSize - 1, tileSize - 1));
+    rect.setFillColor(preview.getColor());
+
+    for (auto &b : blocks) {
+        float drawX = panelX + ((b.x - minX) + 1) * tileSize;
+        float drawY = panelY + ((b.y - minY) + 1) * tileSize;
+        rect.setPosition(drawX, drawY);
+        window.draw(rect);
+    }
+}
+
+void Game::drawScore() {
+    float infoX = board.getWidth() * tileSize + 20.f;
+
+    sf::Text scoreText("Score: " + std::to_string(score), font, 20);
+    scoreText.setFillColor(sf::Color::White);
+    scoreText.setPosition(infoX, 20);
+    window.draw(scoreText);
+
+    sf::Text bestText("Best: " + std::to_string(bestScore), font, 18);
+    bestText.setFillColor(sf::Color::Yellow);
+    bestText.setPosition(infoX, 50);
+    window.draw(bestText);
+
+    sf::Text levelText("Level: " + std::to_string(level), font, 18);
+    levelText.setFillColor(sf::Color::Cyan);
+    levelText.setPosition(infoX, 80);
+    window.draw(levelText);
 }
 
 /**
@@ -229,10 +313,43 @@ void Game::render() {
         }
 
         if (gameOver) {
-            sf::Text gameOverText("Game Over!\nAppuyez sur R pour rejouer", font, 25);
+            // Efface tout avec un fond noir
+            window.clear(sf::Color::Black);
+
+            // === Titre Game Over ===
+            sf::Text gameOverText("=== GAME OVER ===", font, 50);
             gameOverText.setFillColor(sf::Color::Red);
-            gameOverText.setPosition(50, 200);
+            sf::FloatRect bounds = gameOverText.getLocalBounds();
+            gameOverText.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+            gameOverText.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f - 80);
             window.draw(gameOverText);
+
+            // === Affichage du Score ===
+            sf::Text scoreText("Score : " + std::to_string(score), font, 30);
+            scoreText.setFillColor(sf::Color::Yellow);
+            bounds = scoreText.getLocalBounds();
+            scoreText.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+            scoreText.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f - 20);
+            window.draw(scoreText);
+
+            // === Meilleur Score ===
+            sf::Text bestText("Best : " + std::to_string(bestScore), font, 25);
+            bestText.setFillColor(sf::Color::Cyan);
+            bounds = bestText.getLocalBounds();
+            bestText.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+            bestText.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f + 20);
+            window.draw(bestText);
+
+            // === Instructions pour rejouer ===
+            sf::Text infoText("Appuyez sur R pour rejouer", font, 22);
+            infoText.setFillColor(sf::Color::White);
+            bounds = infoText.getLocalBounds();
+            infoText.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+            infoText.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f + 80);
+            window.draw(infoText);
+
+            window.display();
+            return; // Empêche d'afficher le reste du jeu
         }
 
         if (state == GameState::PAUSED) {
@@ -240,7 +357,54 @@ void Game::render() {
         }
     }
 
+    if (state == GameState::PLAYING || state == GameState::GAME_OVER || state == GameState::PAUSED) {
+        drawScore();
+        drawNextPiece();
+    }
+
     window.display();
+}
+
+
+void Game::resetGame() {
+    // Réinitialiser la grille
+    board = Board(board.getWidth(), board.getHeight());
+
+    // Réinitialiser les variables
+    score = 0;
+    level = 1;
+    timer = 0;
+    delay = 0.5f;
+    clearing = false;
+    clearTimer = 0;
+    gameOver = false;
+    state = GameState::PLAYING;
+
+    // Générer les nouveaux Tetrominos
+    current = std::make_unique<Tetromino>(TetrominoType(rand()%7), board.getWidth()/2);
+    next = std::make_unique<Tetromino>(TetrominoType(rand()%7), board.getWidth()/2);
+}
+
+
+// Lecture du meilleur score depuis un fichier
+void Game::loadBestScore() {
+    std::ifstream file("scores.txt");
+    if (file.is_open()) {
+        file >> bestScore;
+        file.close();
+    }
+}
+
+// Sauvegarde si on bat le record
+void Game::saveBestScore() {
+    if (score > bestScore) {
+        bestScore = score;
+        std::ofstream file("scores.txt");
+        if (file.is_open()) {
+            file << bestScore;
+            file.close();
+        }
+    }
 }
 
 /**
@@ -313,23 +477,37 @@ void Game::drawAbout() {
  * @brief Affiche l'écran de pause.
  */
 void Game::drawPause() {
+    // Rectangle semi-transparent
+    sf::RectangleShape overlay(sf::Vector2f(window.getSize().x, window.getSize().y));
+    overlay.setFillColor(sf::Color(0, 0, 0, 150)); // noir avec transparence
+    window.draw(overlay);
+
+    // Texte Pause
     sf::Text pauseText("PAUSE", font, 50);
     pauseText.setFillColor(sf::Color::Yellow);
-
     sf::FloatRect bounds = pauseText.getLocalBounds();
     pauseText.setOrigin(bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f);
     pauseText.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
-
     window.draw(pauseText);
 
     sf::Text infoText("Appuyez sur P pour reprendre", font, 20);
     infoText.setFillColor(sf::Color::White);
-
     bounds = infoText.getLocalBounds();
     infoText.setOrigin(bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f);
     infoText.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f + 50);
-
     window.draw(infoText);
+}
+
+
+void Game::updateScore(int linesCleared) {
+    static const std::array<int,5> comboPoints = {0,100,300,500,800};
+    score += comboPoints[linesCleared];
+
+    totalLinesCleared += linesCleared;
+    if (totalLinesCleared / 10 >= level) {
+        level++;
+        delay = std::max(0.1f, delay * 0.95f); // accélération progressive
+    }
 }
 
 /**
