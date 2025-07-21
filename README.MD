@@ -1,7 +1,3 @@
-Sure, here's a `README.md` for your project, designed to be clear, engaging, and informative.
-
------
-
 # Tetris Game
 
 This is a classic Tetris game developed in C++ using the **SFML** multimedia library for graphics and user interaction. The project is built with **CMake** for cross-platform compatibility and documented using **Doxygen** for clear code understanding.
@@ -10,11 +6,11 @@ This is a classic Tetris game developed in C++ using the **SFML** multimedia lib
 
 ## Features
 
-  * Classic Tetris gameplay mechanics.
-  * Smooth graphics and animations powered by SFML.
-  * Intuitive controls.
-  * Modular and well-structured C++ codebase.
-  * Comprehensive Doxygen documentation for easy code navigation.
+* Classic Tetris gameplay mechanics.
+* Smooth graphics and animations powered by SFML.
+* Intuitive controls.
+* Modular and well-structured C++ codebase.
+* Comprehensive Doxygen documentation for easy code navigation.
 
 -----
 
@@ -26,12 +22,12 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 Before you begin, ensure you have the following installed:
 
-  * **C++ Compiler**: A C++ compatible compiler (e.g., GCC, Clang, MSVC).
-  * **CMake**: Version 3.10 or higher.
+* **C++ Compiler**: A C++ compatible compiler (e.g., GCC, Clang, MSVC).
+* **CMake**: Version 3.10 or higher.
       * [Download CMake](https://cmake.org/download/)
-  * **SFML**: The Simple and Fast Multimedia Library.
-      * [Download SFML](https://www.google.com/search?q=https://www.org/download/sfml/) (Choose the appropriate version for your compiler and OS).
-      * Make sure SFML is correctly installed and its libraries are discoverable by CMake. On Linux, you might install it via your package manager (e.g., `sudo apt install libsfml-dev`).
+* **SFML**: The Simple and Fast Multimedia Library.
+  * [Download SFML](https://www.google.com/search?q=https://www.org/download/sfml/) (Choose the appropriate version for your compiler and OS).
+  * Make sure SFML is correctly installed and its libraries are discoverable by CMake. On Linux, you might install it via your package manager (e.g., `sudo apt install libsfml-dev`).
 
 ### Building the Project
 
