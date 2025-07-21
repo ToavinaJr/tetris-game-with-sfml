@@ -26,7 +26,7 @@ Before you begin, ensure you have the following installed:
 * **CMake**: Version 3.10 or higher.
       * [Download CMake](https://cmake.org/download/)
 * **SFML**: The Simple and Fast Multimedia Library.
-  * [Download SFML](https://www.google.com/search?q=https://www.org/download/sfml/) (Choose the appropriate version for your compiler and OS).
+  * [Download SFML](https://www.sfml-dev.org/download/) (Choose the appropriate version for your compiler and OS).
   * Make sure SFML is correctly installed and its libraries are discoverable by CMake. On Linux, you might install it via your package manager (e.g., `sudo apt install libsfml-dev`).
 
 ### Building the Project
@@ -34,33 +34,33 @@ Before you begin, ensure you have the following installed:
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/ToavinaJr/tetris-game-with-sfml
-    cd tetris-game-with-sfml
+        git clone https://github.com/ToavinaJr/tetris-game-with-sfml
+        cd tetris-game-with-sfml
     ```
 
 2. **Create a build directory and navigate into it:**
 
     ```bash
-    mkdir build
-    cd build
+        mkdir build
+        cd build
     ```
 
 3. **Configure the project with CMake:**
 
     ```bash
-    cmake ..
+        cmake ..
     ```
 
     If CMake struggles to find SFML, you might need to provide a hint, for example:
 
     ```bash
-    cmake -DCMAKE_PREFIX_PATH="/path/to/your/SFML" ..
+        cmake -DCMAKE_PREFIX_PATH="/path/to/your/SFML" ..
     ```
 
 4. **Build the project:**
 
     ```bash
-    cmake --build .
+        cmake --build .
     ```
 
     This command will compile the source code and create the executable.
