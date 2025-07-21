@@ -39,7 +39,10 @@ private:
     void render();
 
     void setupMenuButtons();
+    void setupPauseButtons();
+
     void handleMenuClick(const sf::Vector2f& mousePos);
+    void handlePauseClick(const sf::Vector2f& mousePos);
 
     void drawMenu();
     void drawHelp();
@@ -77,8 +80,9 @@ private:
     GameState state;
     sf::Font font;
 
-    // Boutons du menu
+    // Boutons dans le jeu
     std::vector<Button> menuButtons;
+    std::vector<Button> pauseButtons;
 };
 
 #endif // GAME_HPP

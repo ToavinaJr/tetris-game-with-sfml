@@ -31,6 +31,8 @@ Game::Game(int width, int height, int t)
     next = std::make_unique<Tetromino>(TetrominoType(rand()%7), width/2);
 
     setupMenuButtons();
+    setupPauseButtons();
+
     loadBestScore();
 }
 
@@ -41,6 +43,20 @@ Game::Game(int width, int height, int t)
  */
 void Game::handleMenuClick(const sf::Vector2f& mousePos) {
     for (auto& btn : menuButtons) {
+        if (btn.isMouseOver(mousePos)) {
+            btn.onClick();
+            break;
+        }
+    }
+}
+
+/**
+ * @brief Gère les clics sur les boutons du menu.
+ *
+ * @param mousePos Position actuelle de la souris dans la fenêtre.
+ */
+void Game::handlePauseClick(const sf::Vector2f& mousePos) {
+    for (auto& btn : pauseButtons) {
         if (btn.isMouseOver(mousePos)) {
             btn.onClick();
             break;
@@ -63,38 +79,61 @@ void Game::processEvents() {
     while (window.pollEvent(e)) {
         if (e.type == sf::Event::Closed) window.close();
 
+        // --- Gestion du Game Over ---
         if (state == GameState::GAME_OVER) {
             if (e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::R) {
                 resetGame();
             }
+            continue; // On ne fait rien d'autre si on est en Game Over
         }
 
+        // --- Gestion du Menu ---
         if (state == GameState::MENU) {
             if (e.type == sf::Event::MouseButtonPressed &&
                 e.mouseButton.button == sf::Mouse::Left) {
                 sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
                 handleMenuClick(mousePos);
             }
+            continue;
         }
 
+        // --- Aide et A propos ---
         if ((state == GameState::HELP || state == GameState::ABOUT) &&
             e.type == sf::Event::KeyPressed &&
             e.key.code == sf::Keyboard::Escape) {
             state = GameState::MENU;
+            continue;
         }
 
-        if (state == GameState::PLAYING || state == GameState::PAUSED) {
+        // --- Pause ---
+        if (state == GameState::PAUSED) {
+            // Gestion des clics sur les boutons de pause
+            if (e.type == sf::Event::MouseButtonPressed &&
+                e.mouseButton.button == sf::Mouse::Left) {
+                sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                handlePauseClick(mousePos);
+            }
+
+            // Reprise rapide avec P
             if (e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::P) {
-                if (state == GameState::PLAYING)
-                    state = GameState::PAUSED;
-                else if (state == GameState::PAUSED)
-                    state = GameState::PLAYING;
+                state = GameState::PLAYING;
+            }
+
+            continue; // Ne pas traiter la logique du jeu si on est en pause
+        }
+
+        // --- Touche Pause depuis le jeu ---
+        if (state == GameState::PLAYING) {
+            if (e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::P) {
+                state = GameState::PAUSED;
+                continue;
             }
         }
 
-        if (state != GameState::PLAYING || gameOver) continue;
+        // --- Ne pas continuer si Game Over pendant le jeu ---
+        if (gameOver) continue;
 
-        // Gestion des mouvements et du hard drop
+        // --- Gestion des mouvements et du Hard Drop ---
         if (!clearing && e.type == sf::Event::KeyPressed) {
             if (e.key.code == sf::Keyboard::Left) {
                 current->move(-1,0);
@@ -211,6 +250,29 @@ void Game::update(float dt) {
     }
 }
 
+/**
+ * @brief Dessine l'aperçu de la prochaine pièce (Tetromino) dans un panneau latéral.
+ *
+ * Cette fonction affiche un petit cadre à droite de la grille de jeu
+ * indiquant au joueur quel sera le prochain Tetromino à apparaître.
+ *
+ * @details
+ * - Affiche le titre "Next:" au-dessus du cadre.
+ * - Dessine un cadre (rectangle) servant de zone d'aperçu.
+ * - Copie la pièce suivante (`next`), normalise sa position
+ *   pour qu'elle soit centrée dans le cadre, puis dessine chaque bloc.
+ *
+ * @note
+ * - La fonction retourne immédiatement si aucun Tetromino suivant n'est défini (`next == nullptr`).
+ * - Les coordonnées des blocs sont recalculées pour qu'ils s'affichent proprement
+ *   dans un espace restreint de 4x5 cases.
+ *
+ * @warning
+ * La fonction suppose que `next` est une pièce valide (pas de vérification approfondie
+ * sur l'intégrité des données).
+ *
+ * @see Game::render() Pour l'endroit où cette fonction est appelée.
+ */
 void Game::drawNextPiece() {
     if (!next) return;
 
@@ -255,6 +317,7 @@ void Game::drawNextPiece() {
         window.draw(rect);
     }
 }
+
 
 /**
  * @brief Affiche les informations du jeu (Score, Meilleur score, Niveau).
@@ -511,45 +574,60 @@ void Game::drawAbout() {
 }
 
 /**
- * @brief Affiche l'écran de pause.
- */
-/**
- * @brief Affiche l'écran de pause centré uniquement dans la grille du jeu.
+ * @brief Affiche le menu de pause avec ses boutons.
  */
 void Game::drawPause() {
-    // Rectangle semi-transparent sur toute la fenêtre
+    // Fond semi-transparent sur toute la fenêtre
     sf::RectangleShape overlay(sf::Vector2f(window.getSize().x, window.getSize().y));
-    overlay.setFillColor(sf::Color(0, 0, 0, 150)); // noir avec transparence
+    overlay.setFillColor(sf::Color(0, 0, 0, 0));
     window.draw(overlay);
 
-    // === Dimensions de la grille uniquement ===
+    // === Titre "PAUSE" centré uniquement dans la grille ===
     float gridWidth = board.getWidth() * tileSize;
-    float gridHeight = board.getHeight() * tileSize;
+    sf::Text pauseTitle("=== PAUSE ===", font, 40);
+    pauseTitle.setFillColor(sf::Color::Yellow);
+    sf::FloatRect titleBounds = pauseTitle.getLocalBounds();
+    pauseTitle.setOrigin(titleBounds.width / 2.f, titleBounds.height / 2.f);
+    pauseTitle.setPosition(gridWidth / 2.f, 100.f); // à ~100px du haut de la grille
+    window.draw(pauseTitle);
 
-    // === Centre de la grille ===
-    float centerX = gridWidth / 2.f;
-    float centerY = gridHeight / 2.f;
-
-    // === Texte "PAUSE" ===
-    sf::Text pauseText("PAUSE", font, 50);
-    pauseText.setFillColor(sf::Color::Yellow);
-
-    sf::FloatRect bounds = pauseText.getLocalBounds();
-    pauseText.setOrigin(bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f);
-    pauseText.setPosition(centerX, centerY - 20.f);
-    window.draw(pauseText);
-
-    // === Texte "Appuyez sur P pour reprendre" ===
-    sf::Text infoText("Appuyez sur P pour reprendre", font, 20);
-    infoText.setFillColor(sf::Color::White);
-
-    bounds = infoText.getLocalBounds();
-    infoText.setOrigin(bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f);
-    infoText.setPosition(centerX, centerY + 40.f);
-    window.draw(infoText);
+    // === Boutons ===
+    sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+    for (auto &btn : pauseButtons) {
+        if (btn.isMouseOver(mousePos)) {
+            btn.shape.setFillColor(sf::Color(150, 150, 150));
+        } else {
+            btn.shape.setFillColor(sf::Color(100, 100, 100));
+        }
+        window.draw(btn.shape);
+        window.draw(btn.text);
+    }
 }
 
 
+/**
+ * @brief Met à jour le score, le niveau et la vitesse du jeu après l'effacement de lignes.
+ *
+ * Cette fonction applique un système de points basé sur le nombre de lignes effacées en une seule fois,
+ * met à jour le nombre total de lignes effacées et augmente progressivement le niveau et la vitesse du jeu.
+ *
+ * @param linesCleared Nombre de lignes effacées simultanément (valeur attendue entre 0 et 4).
+ *
+ * @details
+ * - Barème des points attribués :
+ *   - 0 ligne : 0 point
+ *   - 1 ligne : 100 points
+ *   - 2 lignes : 300 points
+ *   - 3 lignes : 500 points
+ *   - 4 lignes : 800 points (Tetris)
+ * - Tous les 10 lignes effacées (`totalLinesCleared / 10 >= level`), le niveau augmente de 1.
+ * - La vitesse de descente (`delay`) diminue progressivement (multipliée par 0.95 à chaque niveau),
+ *   mais ne descend jamais en dessous de **0.1 seconde**.
+ *
+ * @note Cette fonction ne sauvegarde pas le score maximum, elle ne fait qu’actualiser l’état actuel de la partie.
+ *
+ * @warning Assurez-vous que `linesCleared` est compris entre 0 et 4 pour éviter tout accès hors limites dans `comboPoints`.
+ */
 void Game::updateScore(int linesCleared) {
     static const std::array<int,5> comboPoints = {0,100,300,500,800};
     score += comboPoints[linesCleared];
@@ -560,6 +638,7 @@ void Game::updateScore(int linesCleared) {
         delay = std::max(0.1f, delay * 0.95f); // accélération progressive
     }
 }
+
 
 /**
  * @brief Configure les boutons du menu (Jouer, Aide, À propos, Quitter).
@@ -611,6 +690,64 @@ void Game::setupMenuButtons() {
         }
 
         menuButtons.push_back(btn);
+    }
+}
+
+/**
+ * @brief Configure les boutons du menu pause (Reprendre, Aller au menu, Quitter).
+ */
+void Game::setupPauseButtons() {
+    std::vector<std::string> labels = {"Reprendre", "Aller au menu", "Quitter"};
+
+    float width = 220.f;
+    float height = 50.f;
+    float spacing = 70.f;
+
+    float gridWidth = board.getWidth() * tileSize;
+    float gridHeight = board.getHeight() * tileSize;
+
+    float totalHeight = labels.size() * height + (labels.size() - 1) * (spacing - height);
+    float startY = (gridHeight - totalHeight) / 2.f;
+    float centerX = gridWidth / 2.f;
+
+    pauseButtons.clear();
+    for (size_t i = 0; i < labels.size(); i++) {
+        Button btn;
+        btn.shape.setSize(sf::Vector2f(width, height));
+
+        float posX = centerX - width / 2.f;
+        float posY = startY + i * spacing;
+
+        btn.shape.setPosition(posX, posY);
+        btn.shape.setFillColor(sf::Color(100, 100, 100));
+        btn.shape.setOutlineColor(sf::Color::White);
+        btn.shape.setOutlineThickness(2);
+
+        btn.text.setFont(font);
+        btn.text.setString(labels[i]);
+        btn.text.setCharacterSize(22);
+        btn.text.setFillColor(sf::Color::White);
+
+        // Centrage du texte
+        sf::FloatRect textBounds = btn.text.getLocalBounds();
+        btn.text.setOrigin(textBounds.left + textBounds.width / 2.f,
+                           textBounds.top + textBounds.height / 2.f);
+        btn.text.setPosition(centerX, posY + height / 2.f);
+
+        // Actions des boutons
+        if (labels[i] == "Reprendre") {
+            btn.onClick = [this]() { state = GameState::PLAYING; };
+        } else if (labels[i] == "Aller au menu") {
+            btn.onClick = [this]() {
+                resetGame();
+                saveBestScore();
+                state = GameState::MENU; 
+            };
+        } else if (labels[i] == "Quitter") {
+            btn.onClick = [this]() { window.close(); };
+        }
+
+        pauseButtons.push_back(btn);
     }
 }
 
